@@ -163,7 +163,7 @@
       color: #38BDF8;
     }
 
-    /* Clean Full-Screen Welcome Video Splash Overlay (Zero Buttons or Overlays) */
+    /* Clean Full-Screen Welcome Video Splash Overlay */
     #welcome-intro-overlay {
       transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.85s ease;
     }
@@ -180,7 +180,7 @@
        CONFIGURABLE BRAND SETTINGS
        Repository Root Files Required:
        1. index.html
-       2. welcome.mp4   (Plays automatically on entry; refreshes to replay)
+       2. welcome.mp4   (Plays automatically on entry with spoken welcome voiceover)
        3. founder.png   (Founder portrait displayed in the Founder section)
   ====================================================================== -->
   <script>
@@ -188,12 +188,13 @@
       companyName: "SHASTRY GROUP",
       founderName: "Keshav Shastry",
       welcomeVideo: "./welcome.mp4",
+      welcomeVoiceLine: "Welcome to Shastry Group. Creating beyond imagination.",
       founderImage: "./founder.png"
     };
   </script>
 
   <!-- =====================================================================
-       PURE FULL-SCREEN WELCOME VIDEO OVERLAY (NO BUTTONS, NO CONTROLS, NO REWATCH)
+       PURE FULL-SCREEN WELCOME VIDEO OVERLAY (AUTO-PLAYS VIDEO + VOICE)
   ====================================================================== -->
   <div id="welcome-intro-overlay" class="fixed inset-0 z-[100] bg-midnight flex items-center justify-center overflow-hidden">
     <video
@@ -201,7 +202,6 @@
       class="w-full h-full object-contain sm:object-cover bg-midnight pointer-events-none select-none"
       src="./welcome.mp4"
       autoplay
-      muted
       playsinline
       preload="auto"
     ></video>
@@ -899,10 +899,47 @@
   </footer>
 
   <!-- =====================================================================
-       JAVASCRIPT: AUTOMATIC WELCOME VIDEO ENTRY, DIVISION DATA, ROUTER & ANIMATIONS
+       JAVASCRIPT: WELCOME VIDEO + BUILT-IN HTML SPEECH VOICEOVER + ROUTER
   ====================================================================== -->
   <script>
     let heroRevealTriggered = false;
+    let voiceSpoken = false;
+
+    function speakWelcomeVoice() {
+      if (voiceSpoken || !("speechSynthesis" in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(SITE_CONFIG.welcomeVoiceLine);
+        const voices = window.speechSynthesis.getVoices();
+        const preferredVoice = voices.find(
+          (v) =>
+            v.lang.startsWith("en") &&
+            (v.name.includes("Google UK English Male") ||
+              v.name.includes("Daniel") ||
+              v.name.includes("Natural") ||
+              v.name.includes("Male"))
+        ) || voices.find((v) => v.lang.startsWith("en"));
+
+        if (preferredVoice) {
+          utterance.voice = preferredVoice;
+        }
+        utterance.rate = 0.94;
+        utterance.pitch = 0.98;
+        utterance.volume = 1.0;
+        utterance.onstart = () => {
+          voiceSpoken = true;
+        };
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {
+        // Ignore if speech synthesis is blocked prior to user interaction
+      }
+    }
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        if (!voiceSpoken) speakWelcomeVoice();
+      };
+    }
 
     function triggerHeroEntrance() {
       if (heroRevealTriggered) return;
@@ -1282,10 +1319,14 @@
     });
 
     document.addEventListener("DOMContentLoaded", () => {
-      // 0. Automatically play welcome.mp4 on page load and transition into website when ended
+      // 0. Automatically play welcome.mp4 + HTML Speech Synthesis voiceover
       const welcomeVideo = document.getElementById("welcome-video-player");
 
       if (welcomeVideo) {
+        welcomeVideo.addEventListener("playing", () => {
+          speakWelcomeVoice();
+        });
+
         welcomeVideo.addEventListener("ended", () => {
           finishWelcomeIntro();
         });
@@ -1294,11 +1335,28 @@
           finishWelcomeIntro();
         });
 
+        welcomeVideo.muted = false;
         const playPromise = welcomeVideo.play();
         if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            finishWelcomeIntro();
-          });
+          playPromise
+            .then(() => {
+              speakWelcomeVoice();
+            })
+            .catch(() => {
+              // Browser autoplay policy fallback: start video muted and trigger sound + voice on first interaction
+              welcomeVideo.muted = true;
+              welcomeVideo.play().catch(() => finishWelcomeIntro());
+              const unlockAudio = () => {
+                welcomeVideo.muted = false;
+                speakWelcomeVoice();
+                document.removeEventListener("click", unlockAudio);
+                document.removeEventListener("touchstart", unlockAudio);
+                document.removeEventListener("keydown", unlockAudio);
+              };
+              document.addEventListener("click", unlockAudio);
+              document.addEventListener("touchstart", unlockAudio);
+              document.addEventListener("keydown", unlockAudio);
+            });
         }
       } else {
         finishWelcomeIntro();

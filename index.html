@@ -162,20 +162,50 @@
       transform: translateX(3px);
       color: #38BDF8;
     }
+
+    /* Clean Full-Screen Welcome Video Splash Overlay (Zero Buttons or Overlays) */
+    #welcome-intro-overlay {
+      transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.85s ease;
+    }
+    #welcome-intro-overlay.intro-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
   </style>
 </head>
-<body class="bg-midnight text-platinum selection:bg-electric selection:text-white">
+<body class="bg-midnight text-platinum selection:bg-electric selection:text-white overflow-hidden">
 
   <!-- =====================================================================
        CONFIGURABLE BRAND SETTINGS
+       Repository Root Files Required:
+       1. index.html
+       2. welcome.mp4   (Plays automatically on entry; refreshes to replay)
+       3. founder.png   (Founder portrait displayed in the Founder section)
   ====================================================================== -->
   <script>
     const SITE_CONFIG = {
       companyName: "SHASTRY GROUP",
       founderName: "Keshav Shastry",
-      founderImage: "./founder.png" // Keep founder.png in the root repository folder
+      welcomeVideo: "./welcome.mp4",
+      founderImage: "./founder.png"
     };
   </script>
+
+  <!-- =====================================================================
+       PURE FULL-SCREEN WELCOME VIDEO OVERLAY (NO BUTTONS, NO CONTROLS, NO REWATCH)
+  ====================================================================== -->
+  <div id="welcome-intro-overlay" class="fixed inset-0 z-[100] bg-midnight flex items-center justify-center overflow-hidden">
+    <video
+      id="welcome-video-player"
+      class="w-full h-full object-contain sm:object-cover bg-midnight pointer-events-none select-none"
+      src="./welcome.mp4"
+      autoplay
+      muted
+      playsinline
+      preload="auto"
+    ></video>
+  </div>
 
   <!-- =====================================================================
        NAVIGATION HEADER
@@ -245,12 +275,12 @@
   </header>
 
   <!-- =====================================================================
-       MAIN LANDING VIEW (ALL 7 SECTIONS)
+       MAIN LANDING VIEW (REVEALED AUTOMATICALLY WHEN WELCOME VIDEO ENDS)
   ====================================================================== -->
   <div id="main-landing-view">
     <main>
       <!-- =====================================================================
-           SECTION 1: HERO EXPERIENCE (AMBIENT PARTICLE CANVAS + TYPOGRAPHY)
+           SECTION 1: HERO EXPERIENCE
       ====================================================================== -->
       <section id="home" class="relative min-h-screen w-full flex items-center justify-center overflow-hidden pt-20">
         <canvas id="hero-canvas" class="absolute inset-0 w-full h-full z-0"></canvas>
@@ -277,7 +307,7 @@
             From captivating animations and original music to extraordinary stories, immersive games and digital experiences — we transform ideas into reality.
           </p>
 
-          <!-- Explore Action -->
+          <!-- Action Button -->
           <div class="flex items-center justify-center hero-reveal">
             <a href="#services" class="px-9 py-4 rounded-xl bg-electric hover:bg-blue-500 text-white font-display font-bold text-sm tracking-[0.14em] uppercase transition-all duration-300 shadow-xl shadow-electric/30 hover:shadow-electricGlow/40 hover:-translate-y-0.5 text-center">
               EXPLORE OUR SERVICES
@@ -431,7 +461,6 @@
       ====================================================================== -->
       <section id="services" class="relative py-24 sm:py-32 bg-charcoal/40 border-t border-slate-800/60">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <!-- Section Header -->
           <div class="max-w-3xl mb-20 reveal-up">
             <div class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.25em] text-electricGlow mb-4">
               <span class="w-8 h-[1px] bg-electricGlow"></span>
@@ -445,7 +474,6 @@
             </p>
           </div>
 
-          <!-- Dynamically Rendered Divisions Container -->
           <div id="divisions-container" class="space-y-16"></div>
         </div>
       </section>
@@ -720,7 +748,6 @@
   <section id="subservice-detail-view" class="hidden min-h-screen pt-28 pb-24 bg-midnight bg-grid-pattern relative overflow-hidden">
     <div class="ambient-orb w-[520px] h-[520px] bg-electric/15 top-20 right-0"></div>
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <!-- Top Back Bar & Breadcrumb -->
       <div class="flex flex-wrap items-center justify-between gap-4 pb-8 mb-10 border-b border-slate-800/80">
         <button
           id="subservice-back-btn"
@@ -743,7 +770,6 @@
         </div>
       </div>
 
-      <!-- Main Detail Header Card -->
       <div class="glass-card rounded-3xl p-8 sm:p-12 lg:p-14 border border-slate-700/70 mb-10">
         <div class="flex flex-wrap items-center gap-3 mb-5">
           <span id="detail-division-badge" class="px-3.5 py-1.5 rounded-lg bg-electric/15 border border-electric/40 text-xs font-mono font-semibold text-electricGlow tracking-widest">
@@ -763,9 +789,7 @@
         </p>
       </div>
 
-      <!-- 3-Column Deep-Dive Grid: What We Do, Workflow, Deliverables -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
-        <!-- Column 1: Creative Scope & Craft -->
         <div class="glass-card rounded-2xl p-8">
           <div class="w-11 h-11 rounded-xl bg-electric/15 border border-electric/40 flex items-center justify-center text-electricGlow font-mono font-bold text-sm mb-5">
             01
@@ -776,7 +800,6 @@
           </p>
         </div>
 
-        <!-- Column 2: Production Methodology -->
         <div class="glass-card rounded-2xl p-8">
           <div class="w-11 h-11 rounded-xl bg-electric/15 border border-electric/40 flex items-center justify-center text-electricGlow font-mono font-bold text-sm mb-5">
             02
@@ -785,7 +808,6 @@
           <ul id="detail-workflow-list" class="space-y-3 text-sm sm:text-base text-slate-300"></ul>
         </div>
 
-        <!-- Column 3: Final Deliverables -->
         <div class="glass-card rounded-2xl p-8">
           <div class="w-11 h-11 rounded-xl bg-electric/15 border border-electric/40 flex items-center justify-center text-electricGlow font-mono font-bold text-sm mb-5">
             03
@@ -795,7 +817,6 @@
         </div>
       </div>
 
-      <!-- Related Capabilities in the Same Division -->
       <div class="glass-card rounded-3xl p-8 sm:p-10 border border-slate-800/80">
         <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div>
@@ -821,7 +842,6 @@
   <footer class="bg-midnight border-t border-slate-800/80 pt-16 pb-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-slate-800/80">
-        <!-- Brand Column -->
         <div class="lg:col-span-5 space-y-4">
           <a href="#home" onclick="closeSubServicePage()" class="inline-flex items-center gap-3">
             <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-charcoalLight border border-slate-700/80">
@@ -845,7 +865,6 @@
           </p>
         </div>
 
-        <!-- Quick Navigation -->
         <div class="lg:col-span-3">
           <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] text-white mb-4">Quick Navigation</h4>
           <ul class="space-y-2.5 text-sm text-slate-400">
@@ -859,7 +878,6 @@
           </ul>
         </div>
 
-        <!-- Our Divisions -->
         <div class="lg:col-span-4">
           <h4 class="font-display font-bold text-xs uppercase tracking-[0.2em] text-white mb-4">Our Divisions</h4>
           <ul class="space-y-2.5 text-sm text-slate-400">
@@ -881,9 +899,43 @@
   </footer>
 
   <!-- =====================================================================
-       JAVASCRIPT: DIVISION DATA, SUB-SERVICE ROUTER, PARTICLE FIELD & GSAP
+       JAVASCRIPT: AUTOMATIC WELCOME VIDEO ENTRY, DIVISION DATA, ROUTER & ANIMATIONS
   ====================================================================== -->
   <script>
+    let heroRevealTriggered = false;
+
+    function triggerHeroEntrance() {
+      if (heroRevealTriggered) return;
+      heroRevealTriggered = true;
+      if (typeof gsap !== "undefined") {
+        gsap.from(".hero-reveal", {
+          y: 26,
+          opacity: 0,
+          duration: 0.9,
+          stagger: 0.12,
+          ease: "power3.out"
+        });
+      }
+    }
+
+    function finishWelcomeIntro() {
+      const overlay = document.getElementById("welcome-intro-overlay");
+      const video = document.getElementById("welcome-video-player");
+      if (!overlay) return;
+
+      overlay.classList.add("intro-hidden");
+      document.body.classList.remove("overflow-hidden");
+
+      if (video && !video.paused) {
+        video.pause();
+      }
+
+      triggerHeroEntrance();
+    }
+
+    // =========================================================================
+    // SIX CREATIVE DIVISIONS & CLICKABLE SUB-SERVICES DATA
+    // =========================================================================
     const DIVISIONS_DATA = [
       {
         id: "service-animation",
@@ -903,102 +955,22 @@
           "Synchronized sound design, voiceover alignment, and color polish"
         ],
         subServices: [
-          {
-            slug: "cinematic-animations",
-            title: "Cinematic Animations",
-            summary: "Widescreen, film-grade animated sequences crafted with dramatic lighting, emotional pacing, and theatrical visual depth.",
-            scope: "We direct and produce dramatic animated scenes featuring atmospheric depth, volumetric lighting, expressive character staging, and sweeping visual arcs built for trailers, short films, and flagship brand stories."
-          },
-          {
-            slug: "3d-animated-videos",
-            title: "3D Animated Videos",
-            summary: "Dimensional, depth-rich animated environments and character performances engineered with lifelike lighting and spatial realism.",
-            scope: "We build immersive three-dimensional worlds, futuristic architecture, and dynamic character animations with realistic shadows, reflections, and smooth spatial movement."
-          },
-          {
-            slug: "custom-video-generation",
-            title: "Custom Video Generation",
-            summary: "Bespoke visual scene creation transforming original scripts, storyboards, and creative concepts into vivid motion sequences.",
-            scope: "From single-concept visual shots to complete narrative sequences, we generate custom high-impact video scenes tailored precisely to your story's mood, palette, and artistic direction."
-          },
-          {
-            slug: "professional-video-editing",
-            title: "Professional Video Editing",
-            summary: "Precision timeline assembly, rhythmic pacing, seamless cuts, and narrative tightening that elevate raw scenes into cohesive cinema.",
-            scope: "We structure, trim, pace, and assemble multi-clip productions into seamless visual stories—refining timing, emotional beats, transitions, and visual flow from opening frame to final credit."
-          },
-          {
-            slug: "multi-scene-sequencing",
-            title: "Multi-Scene Sequencing",
-            summary: "Structured shot-by-shot storytelling that connects individual scenes into continuous, long-form narrative episodes.",
-            scope: "We plan and sequence consecutive shots so action, environment, lighting, and story progression flow naturally across multi-minute episodes and full narrative chapters."
-          },
-          {
-            slug: "character-continuity-design",
-            title: "Character Continuity & Design",
-            summary: "Distinctive original characters maintained with unwavering visual consistency across every angle, expression, and scene.",
-            scope: "We design memorable heroes, protagonists, and casts—preserving facial identity, wardrobe details, proportions, and signature style throughout every shot of your series."
-          },
-          {
-            slug: "cinematic-camera-choreography",
-            title: "Cinematic Camera Choreography",
-            summary: "Intentional virtual camera movements including sweeping crane shots, orbital tracking, dynamic zooms, and dramatic reveals.",
-            scope: "Every shot is framed like a live-action feature film—using smooth dolly tracking, aerial reveals, close-up emotional framing, and high-energy action camera motion."
-          },
-          {
-            slug: "start-to-end-frame-transitions",
-            title: "Start-to-End Frame Transitions",
-            summary: "Fluid visual bridges connecting exact opening poses and environments to dramatic closing compositions.",
-            scope: "We craft seamless visual transformations between key story moments—ensuring smooth motion continuity, morphing environments, and unbroken visual momentum."
-          },
-          {
-            slug: "science-fiction-animations",
-            title: "Science-Fiction Animations",
-            summary: "Futuristic worlds, interstellar voyages, advanced technology, and high-concept sci-fi storytelling brought to visual life.",
-            scope: "We specialize in speculative worlds—designing sleek spacecraft, holographic cities, cosmic battles, and futuristic civilizations with authentic sci-fi atmosphere."
-          },
-          {
-            slug: "story-based-animations",
-            title: "Story-Based Animations",
-            summary: "Narrative-driven animated episodes built around compelling plots, emotional turning points, and memorable worldbuilding.",
-            scope: "We adapt original scripts, novels, and folklore into structured animated storytelling that captivates audiences through clear plot arcs and rich character interaction."
-          },
-          {
-            slug: "promotional-trailers-ads",
-            title: "Promotional Trailers & Ads",
-            summary: "High-energy teasers, product launches, and brand showcase videos designed to capture immediate viewer attention.",
-            scope: "We create fast-paced, visually striking promotional trailers and commercial showcases engineered to highlight your brand, book, game, or launch with maximum impact."
-          },
-          {
-            slug: "youtube-series-animations",
-            title: "YouTube & Series Animations",
-            summary: "Engaging episodic animations formatted for high viewer retention, strong visual hooks, and recurring channel audiences.",
-            scope: "Backed by experience across 1,500+ videos and 15,000+ subscribers, we produce episodic animated content tailored for digital audiences and serialized storytelling."
-          },
-          {
-            slug: "business-brand-explainers",
-            title: "Business & Brand Explainers",
-            summary: "Clear, authoritative visual presentations that communicate complex ideas, products, and corporate visions effortlessly.",
-            scope: "We translate business concepts, workflows, and executive visions into polished visual narratives that inform stakeholders and elevate brand credibility."
-          },
-          {
-            slug: "visual-effects-color-grading",
-            title: "Visual Effects & Color Grading",
-            summary: "Atmospheric energy bursts, particle simulations, lighting enhancements, and unified cinema-grade color palettes.",
-            scope: "We enrich scenes with glowing energy effects, atmospheric weather, lens depth, and cohesive color grading so every frame shares a unified signature look."
-          },
-          {
-            slug: "synchronized-voice-sfx",
-            title: "Synchronized Voice & SFX",
-            summary: "Frame-accurate alignment of dialogue, expressive voiceovers, ambient foley, and dramatic sound effects.",
-            scope: "We pair visual motion with crisp character dialogue, environmental soundscapes, and impactful audio cues so every movement feels tangible and alive."
-          },
-          {
-            slug: "high-resolution-mastering",
-            title: "High-Resolution Mastering",
-            summary: "Crisp detail enhancement, aspect-ratio formatting, and final quality polishing for widescreen and vertical platforms.",
-            scope: "Every finished production undergoes final clarity refinement, frame stabilization, and multi-format export optimization for widescreen cinema and digital displays."
-          }
+          { slug: "cinematic-animations", title: "Cinematic Animations", summary: "Widescreen, film-grade animated sequences crafted with dramatic lighting, emotional pacing, and theatrical visual depth.", scope: "We direct and produce dramatic animated scenes featuring atmospheric depth, volumetric lighting, expressive character staging, and sweeping visual arcs built for trailers, short films, and flagship brand stories." },
+          { slug: "3d-animated-videos", title: "3D Animated Videos", summary: "Dimensional, depth-rich animated environments and character performances engineered with lifelike lighting and spatial realism.", scope: "We build immersive three-dimensional worlds, futuristic architecture, and dynamic character animations with realistic shadows, reflections, and smooth spatial movement." },
+          { slug: "custom-video-generation", title: "Custom Video Generation", summary: "Bespoke visual scene creation transforming original scripts, storyboards, and creative concepts into vivid motion sequences.", scope: "From single-concept visual shots to complete narrative sequences, we generate custom high-impact video scenes tailored precisely to your story's mood, palette, and artistic direction." },
+          { slug: "professional-video-editing", title: "Professional Video Editing", summary: "Precision timeline assembly, rhythmic pacing, seamless cuts, and narrative tightening that elevate raw scenes into cohesive cinema.", scope: "We structure, trim, pace, and assemble multi-clip productions into seamless visual stories—refining timing, emotional beats, transitions, and visual flow from opening frame to final credit." },
+          { slug: "multi-scene-sequencing", title: "Multi-Scene Sequencing", summary: "Structured shot-by-shot storytelling that connects individual scenes into continuous, long-form narrative episodes.", scope: "We plan and sequence consecutive shots so action, environment, lighting, and story progression flow naturally across multi-minute episodes and full narrative chapters." },
+          { slug: "character-continuity-design", title: "Character Continuity & Design", summary: "Distinctive original characters maintained with unwavering visual consistency across every angle, expression, and scene.", scope: "We design memorable heroes, protagonists, and casts—preserving facial identity, wardrobe details, proportions, and signature style throughout every shot of your series." },
+          { slug: "cinematic-camera-choreography", title: "Cinematic Camera Choreography", summary: "Intentional virtual camera movements including sweeping crane shots, orbital tracking, dynamic zooms, and dramatic reveals.", scope: "Every shot is framed like a live-action feature film—using smooth dolly tracking, aerial reveals, close-up emotional framing, and high-energy action camera motion." },
+          { slug: "start-to-end-frame-transitions", title: "Start-to-End Frame Transitions", summary: "Fluid visual bridges connecting exact opening poses and environments to dramatic closing compositions.", scope: "We craft seamless visual transformations between key story moments—ensuring smooth motion continuity, morphing environments, and unbroken visual momentum." },
+          { slug: "science-fiction-animations", title: "Science-Fiction Animations", summary: "Futuristic worlds, interstellar voyages, advanced technology, and high-concept sci-fi storytelling brought to visual life.", scope: "We specialize in speculative worlds—designing sleek spacecraft, holographic cities, cosmic battles, and futuristic civilizations with authentic sci-fi atmosphere." },
+          { slug: "story-based-animations", title: "Story-Based Animations", summary: "Narrative-driven animated episodes built around compelling plots, emotional turning points, and memorable worldbuilding.", scope: "We adapt original scripts, novels, and folklore into structured animated storytelling that captivates audiences through clear plot arcs and rich character interaction." },
+          { slug: "promotional-trailers-ads", title: "Promotional Trailers & Ads", summary: "High-energy teasers, product launches, and brand showcase videos designed to capture immediate viewer attention.", scope: "We create fast-paced, visually striking promotional trailers and commercial showcases engineered to highlight your brand, book, game, or launch with maximum impact." },
+          { slug: "youtube-series-animations", title: "YouTube & Series Animations", summary: "Engaging episodic animations formatted for high viewer retention, strong visual hooks, and recurring channel audiences.", scope: "Backed by experience across 1,500+ videos and 15,000+ subscribers, we produce episodic animated content tailored for digital audiences and serialized storytelling." },
+          { slug: "business-brand-explainers", title: "Business & Brand Explainers", summary: "Clear, authoritative visual presentations that communicate complex ideas, products, and corporate visions effortlessly.", scope: "We translate business concepts, workflows, and executive visions into polished visual narratives that inform stakeholders and elevate brand credibility." },
+          { slug: "visual-effects-color-grading", title: "Visual Effects & Color Grading", summary: "Atmospheric energy bursts, particle simulations, lighting enhancements, and unified cinema-grade color palettes.", scope: "We enrich scenes with glowing energy effects, atmospheric weather, lens depth, and cohesive color grading so every frame shares a unified signature look." },
+          { slug: "synchronized-voice-sfx", title: "Synchronized Voice & SFX", summary: "Frame-accurate alignment of dialogue, expressive voiceovers, ambient foley, and dramatic sound effects.", scope: "We pair visual motion with crisp character dialogue, environmental soundscapes, and impactful audio cues so every movement feels tangible and alive." },
+          { slug: "high-resolution-mastering", title: "High-Resolution Mastering", summary: "Crisp detail enhancement, aspect-ratio formatting, and final quality polishing for widescreen and vertical platforms.", scope: "Every finished production undergoes final clarity refinement, frame stabilization, and multi-format export optimization for widescreen cinema and digital displays." }
         ]
       },
       {
@@ -1019,78 +991,18 @@
           "Custom-timed edits tailored for videos, trailers, games, or standalone release"
         ],
         subServices: [
-          {
-            slug: "original-songs-singles",
-            title: "Original Songs & Singles",
-            summary: "Complete, release-ready original songs crafted from concept to final vocal and instrumental master.",
-            scope: "We compose original melodies, write meaningful lyrics, arrange full instrumentation, and deliver polished songs tailored to your artistic vision and audience."
-          },
-          {
-            slug: "cinematic-film-scores",
-            title: "Cinematic Film Scores",
-            summary: "Sweeping orchestral and hybrid compositions engineered to heighten drama, tension, and spectacle on screen.",
-            scope: "We score dramatic scenes, trailers, and visual narratives with dynamic strings, percussion, brass, and atmospheric textures that move in lockstep with the story."
-          },
-          {
-            slug: "emotional-soulful-songs",
-            title: "Emotional & Soulful Songs",
-            summary: "Heartfelt melodies and expressive vocal arrangements designed to evoke deep connection and lasting memory.",
-            scope: "We craft intimate, emotionally resonant compositions centered on poignant lyrics, warm instrumentation, and expressive vocal delivery."
-          },
-          {
-            slug: "motivational-anthems",
-            title: "Motivational Anthems",
-            summary: "High-energy, uplifting tracks built to inspire ambition, determination, and triumphant momentum.",
-            scope: "We produce powerful rhythmic anthems with soaring choruses and driving instrumentation ideal for sports, inspirational stories, and flagship launches."
-          },
-          {
-            slug: "science-fiction-soundtracks",
-            title: "Science-Fiction Soundtracks",
-            summary: "Futuristic synthscapes, cosmic atmospheres, and bold electronic-orchestral hybrids for sci-fi worlds.",
-            scope: "We design otherworldly sonic identities combining deep analog textures, ethereal pads, and futuristic percussion for sci-fi series, books, and games."
-          },
-          {
-            slug: "story-based-musical-narratives",
-            title: "Story-Based Musical Narratives",
-            summary: "Songs that tell a complete story—blending character perspective, plot progression, and musical emotion.",
-            scope: "We transform characters, legends, and fictional chapters into lyrical musical journeys where every verse advances the narrative."
-          },
-          {
-            slug: "original-lyric-writing",
-            title: "Original Lyric Writing",
-            summary: "Poetic, rhythmic, and memorable lyrics written to match your theme, language style, and musical genre.",
-            scope: "We craft structured verses, hooks, and bridges with vivid imagery and natural musical cadence tailored to your story or message."
-          },
-          {
-            slug: "vocal-melody-composition",
-            title: "Vocal Melody Composition",
-            summary: "Distinctive, unforgettable vocal hooks and harmonic progressions designed to stand out from the first listen.",
-            scope: "We develop expressive vocal lines and layered harmonies that anchor each song with strong melodic identity."
-          },
-          {
-            slug: "theme-music-intros",
-            title: "Theme Music & Intros",
-            summary: "Signature sonic logos, channel intros, and recurring character themes that build instant brand recognition.",
-            scope: "We compose concise, memorable musical signatures that give your series, channel, or company an unmistakable audio identity."
-          },
-          {
-            slug: "game-trailer-soundtracks",
-            title: "Game & Trailer Soundtracks",
-            summary: "Dynamic, high-impact musical cues engineered for interactive gameplay loops and dramatic reveal trailers.",
-            scope: "We create loop-ready exploration themes, intense battle tracks, and escalating trailer scores built for interactive and promotional media."
-          },
-          {
-            slug: "background-ambient-scores",
-            title: "Background & Ambient Scores",
-            summary: "Subtle, atmospheric instrumental beds that enhance storytelling, audiobooks, and presentations without overpowering dialogue.",
-            scope: "We compose balanced ambient music that sets mood and emotional tone while leaving clean sonic space for narration and voiceover."
-          },
-          {
-            slug: "audio-mixing-mastering",
-            title: "Audio Mixing & Mastering",
-            summary: "Balanced frequency clarity, stereo depth, and commercial loudness optimization across every playback device.",
-            scope: "We refine vocal presence, instrumental separation, and dynamic balance so your tracks sound crisp on headphones, studio monitors, and mobile speakers."
-          }
+          { slug: "original-songs-singles", title: "Original Songs & Singles", summary: "Complete, release-ready original songs crafted from concept to final vocal and instrumental master.", scope: "We compose original melodies, write meaningful lyrics, arrange full instrumentation, and deliver polished songs tailored to your artistic vision and audience." },
+          { slug: "cinematic-film-scores", title: "Cinematic Film Scores", summary: "Sweeping orchestral and hybrid compositions engineered to heighten drama, tension, and spectacle on screen.", scope: "We score dramatic scenes, trailers, and visual narratives with dynamic strings, percussion, brass, and atmospheric textures that move in lockstep with the story." },
+          { slug: "emotional-soulful-songs", title: "Emotional & Soulful Songs", summary: "Heartfelt melodies and expressive vocal arrangements designed to evoke deep connection and lasting memory.", scope: "We craft intimate, emotionally resonant compositions centered on poignant lyrics, warm instrumentation, and expressive vocal delivery." },
+          { slug: "motivational-anthems", title: "Motivational Anthems", summary: "High-energy, uplifting tracks built to inspire ambition, determination, and triumphant momentum.", scope: "We produce powerful rhythmic anthems with soaring choruses and driving instrumentation ideal for sports, inspirational stories, and flagship launches." },
+          { slug: "science-fiction-soundtracks", title: "Science-Fiction Soundtracks", summary: "Futuristic synthscapes, cosmic atmospheres, and bold electronic-orchestral hybrids for sci-fi worlds.", scope: "We design otherworldly sonic identities combining deep analog textures, ethereal pads, and futuristic percussion for sci-fi series, books, and games." },
+          { slug: "story-based-musical-narratives", title: "Story-Based Musical Narratives", summary: "Songs that tell a complete story—blending character perspective, plot progression, and musical emotion.", scope: "We transform characters, legends, and fictional chapters into lyrical musical journeys where every verse advances the narrative." },
+          { slug: "original-lyric-writing", title: "Original Lyric Writing", summary: "Poetic, rhythmic, and memorable lyrics written to match your theme, language style, and musical genre.", scope: "We craft structured verses, hooks, and bridges with vivid imagery and natural musical cadence tailored to your story or message." },
+          { slug: "vocal-melody-composition", title: "Vocal Melody Composition", summary: "Distinctive, unforgettable vocal hooks and harmonic progressions designed to stand out from the first listen.", scope: "We develop expressive vocal lines and layered harmonies that anchor each song with strong melodic identity." },
+          { slug: "theme-music-intros", title: "Theme Music & Intros", summary: "Signature sonic logos, channel intros, and recurring character themes that build instant brand recognition.", scope: "We compose concise, memorable musical signatures that give your series, channel, or company an unmistakable audio identity." },
+          { slug: "game-trailer-soundtracks", title: "Game & Trailer Soundtracks", summary: "Dynamic, high-impact musical cues engineered for interactive gameplay loops and dramatic reveal trailers.", scope: "We create loop-ready exploration themes, intense battle tracks, and escalating trailer scores built for interactive and promotional media." },
+          { slug: "background-ambient-scores", title: "Background & Ambient Scores", summary: "Subtle, atmospheric instrumental beds that enhance storytelling, audiobooks, and presentations without overpowering dialogue.", scope: "We compose balanced ambient music that sets mood and emotional tone while leaving clean sonic space for narration and voiceover." },
+          { slug: "audio-mixing-mastering", title: "Audio Mixing & Mastering", summary: "Balanced frequency clarity, stereo depth, and commercial loudness optimization across every playback device.", scope: "We refine vocal presence, instrumental separation, and dynamic balance so your tracks sound crisp on headphones, studio monitors, and mobile speakers." }
         ]
       },
       {
@@ -1111,78 +1023,18 @@
           "Publication-ready formatting for digital e-books and print editions"
         ],
         subServices: [
-          {
-            slug: "full-length-novel-writing",
-            title: "Full-Length Novel Writing",
-            summary: "End-to-end novel development transforming your core premise into a richly detailed, complete literary work.",
-            scope: "We develop three-act structure, multi-chapter pacing, engaging dialogue, and vivid prose to bring full-length original novels from concept to completion."
-          },
-          {
-            slug: "science-fiction-books",
-            title: "Science-Fiction Books",
-            summary: "Visionary sci-fi stories exploring futuristic technologies, space exploration, alternate realities, and human ambition.",
-            scope: "We craft logically grounded, imaginative science-fiction novels complete with original technology rules, cosmic settings, and high-stakes dilemmas."
-          },
-          {
-            slug: "thriller-mystery-novels",
-            title: "Thriller & Mystery Novels",
-            summary: "Suspense-driven narratives engineered with clever clues, unexpected twists, and relentless page-turning momentum.",
-            scope: "We construct intricate mysteries, investigative puzzles, and high-tension thrillers that keep readers guessing until the final revelation."
-          },
-          {
-            slug: "fantasy-adventure-sagas",
-            title: "Fantasy & Adventure Sagas",
-            summary: "Heroic quests, mythical realms, and epic conflicts brought to life with rich atmosphere and memorable companions.",
-            scope: "We build immersive fantasy worlds with deep histories, unique factions, and sweeping heroic journeys crafted for readers of all ages."
-          },
-          {
-            slug: "worldbuilding-lore-design",
-            title: "Worldbuilding & Lore Design",
-            summary: "Comprehensive fictional universes complete with histories, geography, cultures, rules, and internal consistency.",
-            scope: "We create detailed universe bibles that serve as the foundation for novels, comics, animations, and games—ensuring every detail feels authentic."
-          },
-          {
-            slug: "character-arc-architecture",
-            title: "Character Arc Architecture",
-            summary: "Multi-dimensional protagonists, mentors, and antagonists with clear motivations, flaws, and transformative growth.",
-            scope: "We design unforgettable character rosters with distinct voices, backstories, and emotional arcs that drive the heart of your story."
-          },
-          {
-            slug: "multi-book-series-planning",
-            title: "Multi-Book Series Planning",
-            summary: "Overarching multi-volume story roadmaps balancing standalone book satisfaction with long-term series payoffs.",
-            scope: "We architect multi-part book series—mapping long-term plot threads, evolving character relationships, and escalating stakes across volumes."
-          },
-          {
-            slug: "chapter-outlining-plotting",
-            title: "Chapter Outlining & Plotting",
-            summary: "Structured scene-by-scene blueprints ensuring tight narrative pacing, rising tension, and zero plot holes.",
-            scope: "Before full drafting begins, we organize beats, turning points, and chapter hooks into a clear blueprint for smooth story execution."
-          },
-          {
-            slug: "young-adult-childrens-books",
-            title: "Young Adult & Children's Books",
-            summary: "Imaginative, inspiring stories crafted with age-appropriate voice, wonder, and positive themes.",
-            scope: "Drawing from proven experience across published youth titles, we write engaging adventures that spark imagination in young and teen readers."
-          },
-          {
-            slug: "manuscript-editing-polish",
-            title: "Manuscript Editing & Polish",
-            summary: "Developmental restructuring, line-by-line prose refinement, and consistency checks for existing drafts.",
-            scope: "We refine pacing, sharpen dialogue, eliminate narrative inconsistencies, and polish language to elevate manuscripts to professional standards."
-          },
-          {
-            slug: "book-cover-concept-blurbs",
-            title: "Book Cover Concept & Blurbs",
-            summary: "Compelling back-cover synopses, hook lines, and visual cover direction designed to attract readers immediately.",
-            scope: "We write high-impact book descriptions and define front-cover visual concepts that capture the essence and genre of your book."
-          },
-          {
-            slug: "print-digital-formatting",
-            title: "Print & Digital Formatting",
-            summary: "Clean interior typography, chapter headers, and layout preparation for seamless digital and paperback publishing.",
-            scope: "We structure manuscripts with clean chapter breaks, front/back matter, and properly proportioned page layouts ready for distribution."
-          }
+          { slug: "full-length-novel-writing", title: "Full-Length Novel Writing", summary: "End-to-end novel development transforming your core premise into a richly detailed, complete literary work.", scope: "We develop three-act structure, multi-chapter pacing, engaging dialogue, and vivid prose to bring full-length original novels from concept to completion." },
+          { slug: "science-fiction-books", title: "Science-Fiction Books", summary: "Visionary sci-fi stories exploring futuristic technologies, space exploration, alternate realities, and human ambition.", scope: "We craft logically grounded, imaginative science-fiction novels complete with original technology rules, cosmic settings, and high-stakes dilemmas." },
+          { slug: "thriller-mystery-novels", title: "Thriller & Mystery Novels", summary: "Suspense-driven narratives engineered with clever clues, unexpected twists, and relentless page-turning momentum.", scope: "We construct intricate mysteries, investigative puzzles, and high-tension thrillers that keep readers guessing until the final revelation." },
+          { slug: "fantasy-adventure-sagas", title: "Fantasy & Adventure Sagas", summary: "Heroic quests, mythical realms, and epic conflicts brought to life with rich atmosphere and memorable companions.", scope: "We build immersive fantasy worlds with deep histories, unique factions, and sweeping heroic journeys crafted for readers of all ages." },
+          { slug: "worldbuilding-lore-design", title: "Worldbuilding & Lore Design", summary: "Comprehensive fictional universes complete with histories, geography, cultures, rules, and internal consistency.", scope: "We create detailed universe bibles that serve as the foundation for novels, comics, animations, and games—ensuring every detail feels authentic." },
+          { slug: "character-arc-architecture", title: "Character Arc Architecture", summary: "Multi-dimensional protagonists, mentors, and antagonists with clear motivations, flaws, and transformative growth.", scope: "We design unforgettable character rosters with distinct voices, backstories, and emotional arcs that drive the heart of your story." },
+          { slug: "multi-book-series-planning", title: "Multi-Book Series Planning", summary: "Overarching multi-volume story roadmaps balancing standalone book satisfaction with long-term series payoffs.", scope: "We architect multi-part book series—mapping long-term plot threads, evolving character relationships, and escalating stakes across volumes." },
+          { slug: "chapter-outlining-plotting", title: "Chapter Outlining & Plotting", summary: "Structured scene-by-scene blueprints ensuring tight narrative pacing, rising tension, and zero plot holes.", scope: "Before full drafting begins, we organize beats, turning points, and chapter hooks into a clear blueprint for smooth story execution." },
+          { slug: "young-adult-childrens-books", title: "Young Adult & Children's Books", summary: "Imaginative, inspiring stories crafted with age-appropriate voice, wonder, and positive themes.", scope: "Drawing from proven experience across published youth titles, we write engaging adventures that spark imagination in young and teen readers." },
+          { slug: "manuscript-editing-polish", title: "Manuscript Editing & Polish", summary: "Developmental restructuring, line-by-line prose refinement, and consistency checks for existing drafts.", scope: "We refine pacing, sharpen dialogue, eliminate narrative inconsistencies, and polish language to elevate manuscripts to professional standards." },
+          { slug: "book-cover-concept-blurbs", title: "Book Cover Concept & Blurbs", summary: "Compelling back-cover synopses, hook lines, and visual cover direction designed to attract readers immediately.", scope: "We write high-impact book descriptions and define front-cover visual concepts that capture the essence and genre of your book." },
+          { slug: "print-digital-formatting", title: "Print & Digital Formatting", summary: "Clean interior typography, chapter headers, and layout preparation for seamless digital and paperback publishing.", scope: "We structure manuscripts with clean chapter breaks, front/back matter, and properly proportioned page layouts ready for distribution." }
         ]
       },
       {
@@ -1203,78 +1055,18 @@
           "High-resolution digital reading editions and print-ready layouts"
         ],
         subServices: [
-          {
-            slug: "comic-story-plot-writing",
-            title: "Comic Story & Plot Writing",
-            summary: "High-concept episodic plots and dramatic issue arcs engineered specifically for visual sequential storytelling.",
-            scope: "We develop gripping comic storylines structured around strong issue openings, mid-issue twists, and unforgettable cliffhanger endings."
-          },
-          {
-            slug: "panel-by-panel-scriptwriting",
-            title: "Panel-by-Panel Scriptwriting",
-            summary: "Detailed comic scripts specifying camera angles, visual action, panel transitions, and concise dialogue.",
-            scope: "We write clear, production-ready comic scripts that guide visual composition, character expressions, and pacing on every single page."
-          },
-          {
-            slug: "original-hero-villain-design",
-            title: "Original Hero & Villain Design",
-            summary: "Iconic character silhouettes, costumes, powers, and visual identities built for instant reader recognition.",
-            scope: "We design original heroes, anti-heroes, and villains with distinctive visual motifs, expressive poses, and consistent appearance across issues."
-          },
-          {
-            slug: "superhero-universe-creation",
-            title: "Superhero Universe Creation",
-            summary: "Interconnected hero rosters, origin stories, lore rules, and shared worlds built for ongoing comic series.",
-            scope: "We build expansive superhero universes where characters, teams, and rivalries intersect across multiple storylines and spin-offs."
-          },
-          {
-            slug: "science-fiction-graphic-novels",
-            title: "Science-Fiction Graphic Novels",
-            summary: "Visually ambitious sci-fi comics featuring futuristic cities, cosmic phenomena, and high-tech action.",
-            scope: "We combine visionary sci-fi worldbuilding with bold visual storytelling to create immersive futuristic graphic novels."
-          },
-          {
-            slug: "thriller-mystery-comics",
-            title: "Thriller & Mystery Comics",
-            summary: "Atmospheric noir shadows, tense interrogations, and visual clues woven directly into the artwork.",
-            scope: "We craft suspenseful mystery and thriller comics using dramatic lighting, sharp framing, and taut narrative pacing."
-          },
-          {
-            slug: "dynamic-page-panel-layouts",
-            title: "Dynamic Page & Panel Layouts",
-            summary: "Strategic grid compositions, splash pages, and inset panels that control reading speed and dramatic impact.",
-            scope: "We design varied page layouts that guide the reader's eye naturally while amplifying explosive double-page spreads and quiet emotional beats."
-          },
-          {
-            slug: "action-choreography-pacing",
-            title: "Action Choreography & Pacing",
-            summary: "Fluid fight sequences, kinetic motion lines, and clear spatial staging that make every action beat easy to follow.",
-            scope: "We choreograph high-energy battle sequences and chase scenes with clear impact frames and thrilling visual momentum."
-          },
-          {
-            slug: "dialogue-lettering-sfx",
-            title: "Dialogue Lettering & SFX",
-            summary: "Clean speech balloon placement, expressive caption boxes, and custom stylized sound effects integrated into the art.",
-            scope: "We arrange dialogue balloons so artwork remains unobstructed while sound effects enhance the energy and rhythm of each scene."
-          },
-          {
-            slug: "comic-cover-illustration",
-            title: "Comic Cover Illustration",
-            summary: "Bold, iconic cover compositions designed to capture the core conflict and visual drama of each issue.",
-            scope: "We create striking front covers with dynamic character staging, dramatic lighting, and clean title integration."
-          },
-          {
-            slug: "multi-issue-series-arcs",
-            title: "Multi-Issue Series Arcs",
-            summary: "Cohesive multi-chapter comic sagas planned across complete story seasons and collected volumes.",
-            scope: "We structure multi-issue narrative arcs so character growth, world stakes, and visual callbacks reward dedicated readers."
-          },
-          {
-            slug: "full-bleed-print-web-editions",
-            title: "Full-Bleed Print & Web Editions",
-            summary: "Properly formatted comic pages optimized for both crisp digital reading and full-bleed print production.",
-            scope: "We prepare finalized comic pages with accurate trim margins, high-resolution artwork, and clean digital packaging."
-          }
+          { slug: "comic-story-plot-writing", title: "Comic Story & Plot Writing", summary: "High-concept episodic plots and dramatic issue arcs engineered specifically for visual sequential storytelling.", scope: "We develop gripping comic storylines structured around strong issue openings, mid-issue twists, and unforgettable cliffhanger endings." },
+          { slug: "panel-by-panel-scriptwriting", title: "Panel-by-Panel Scriptwriting", summary: "Detailed comic scripts specifying camera angles, visual action, panel transitions, and concise dialogue.", scope: "We write clear, production-ready comic scripts that guide visual composition, character expressions, and pacing on every single page." },
+          { slug: "original-hero-villain-design", title: "Original Hero & Villain Design", summary: "Iconic character silhouettes, costumes, powers, and visual identities built for instant reader recognition.", scope: "We design original heroes, anti-heroes, and villains with distinctive visual motifs, expressive poses, and consistent appearance across issues." },
+          { slug: "superhero-universe-creation", title: "Superhero Universe Creation", summary: "Interconnected hero rosters, origin stories, lore rules, and shared worlds built for ongoing comic series.", scope: "We build expansive superhero universes where characters, teams, and rivalries intersect across multiple storylines and spin-offs." },
+          { slug: "science-fiction-graphic-novels", title: "Science-Fiction Graphic Novels", summary: "Visually ambitious sci-fi comics featuring futuristic cities, cosmic phenomena, and high-tech action.", scope: "We combine visionary sci-fi worldbuilding with bold visual storytelling to create immersive futuristic graphic novels." },
+          { slug: "thriller-mystery-comics", title: "Thriller & Mystery Comics", summary: "Atmospheric noir shadows, tense interrogations, and visual clues woven directly into the artwork.", scope: "We craft suspenseful mystery and thriller comics using dramatic lighting, sharp framing, and taut narrative pacing." },
+          { slug: "dynamic-page-panel-layouts", title: "Dynamic Page & Panel Layouts", summary: "Strategic grid compositions, splash pages, and inset panels that control reading speed and dramatic impact.", scope: "We design varied page layouts that guide the reader's eye naturally while amplifying explosive double-page spreads and quiet emotional beats." },
+          { slug: "action-choreography-pacing", title: "Action Choreography & Pacing", summary: "Fluid fight sequences, kinetic motion lines, and clear spatial staging that make every action beat easy to follow.", scope: "We choreograph high-energy battle sequences and chase scenes with clear impact frames and thrilling visual momentum." },
+          { slug: "dialogue-lettering-sfx", title: "Dialogue Lettering & SFX", summary: "Clean speech balloon placement, expressive caption boxes, and custom stylized sound effects integrated into the art.", scope: "We arrange dialogue balloons so artwork remains unobstructed while sound effects enhance the energy and rhythm of each scene." },
+          { slug: "comic-cover-illustration", title: "Comic Cover Illustration", summary: "Bold, iconic cover compositions designed to capture the core conflict and visual drama of each issue.", scope: "We create striking front covers with dynamic character staging, dramatic lighting, and clean title integration." },
+          { slug: "multi-issue-series-arcs", title: "Multi-Issue Series Arcs", summary: "Cohesive multi-chapter comic sagas planned across complete story seasons and collected volumes.", scope: "We structure multi-issue narrative arcs so character growth, world stakes, and visual callbacks reward dedicated readers." },
+          { slug: "full-bleed-print-web-editions", title: "Full-Bleed Print & Web Editions", summary: "Properly formatted comic pages optimized for both crisp digital reading and full-bleed print production.", scope: "We prepare finalized comic pages with accurate trim margins, high-resolution artwork, and clean digital packaging." }
         ]
       },
       {
@@ -1295,78 +1087,18 @@
           "Web-ready deployment packages and modular game architecture"
         ],
         subServices: [
-          {
-            slug: "3d-game-development",
-            title: "3D Game Development",
-            summary: "Interactive three-dimensional environments, spatial camera systems, and real-time 3D gameplay mechanics.",
-            scope: "We engineer immersive 3D game worlds featuring dynamic lighting, responsive character or object movement, and engaging spatial challenges."
-          },
-          {
-            slug: "browser-based-web-games",
-            title: "Browser-Based Web Games",
-            summary: "Instant-play games running directly in modern desktop and mobile web browsers with zero installation required.",
-            scope: "We build fast-loading, accessible web games optimized for instant play across laptops, tablets, and smartphones."
-          },
-          {
-            slug: "real-time-strategy-games",
-            title: "Real-Time Strategy Games",
-            summary: "Tactical decision-making, resource management, and strategic battlefield mechanics that reward smart planning.",
-            scope: "We design strategy experiences with balanced unit mechanics, tactical map layouts, and engaging progression systems."
-          },
-          {
-            slug: "fast-paced-action-games",
-            title: "Fast-Paced Action Games",
-            summary: "High-responsiveness combat, reflex challenges, and dynamic enemy encounters built for thrilling gameplay.",
-            scope: "We tune frame-accurate controls, collision feedback, and escalating waves of action to keep players deeply engaged."
-          },
-          {
-            slug: "story-driven-adventure-games",
-            title: "Story-Driven Adventure Games",
-            summary: "Exploration-focused worlds combining narrative discovery, environmental storytelling, and interactive quests.",
-            scope: "We blend our storytelling expertise with interactive gameplay to build memorable worlds filled with missions, lore, and discovery."
-          },
-          {
-            slug: "level-design-worldbuilding",
-            title: "Level Design & Worldbuilding",
-            summary: "Thoughtfully paced stages, arenas, and environments structured to teach mechanics and reward exploration.",
-            scope: "We design multi-stage progressions where each level introduces fresh challenges, visual landmarks, and satisfying payoffs."
-          },
-          {
-            slug: "gameplay-mechanics-physics",
-            title: "Gameplay Mechanics & Physics",
-            summary: "Core movement, collision detection, scoring rules, and interactive physics tuned for smooth game feel.",
-            scope: "We engineer reliable game loops, responsive input handling, and satisfying tactile feedback across every interaction."
-          },
-          {
-            slug: "game-hud-interface-design",
-            title: "Game HUD & Interface Design",
-            summary: "Clean, futuristic heads-up displays, menus, scoreboards, and controls that keep players informed without clutter.",
-            scope: "We design intuitive menus, live timers, health/score indicators, and touch/keyboard controls that enhance usability."
-          },
-          {
-            slug: "interactive-simulations",
-            title: "Interactive Simulations",
-            summary: "Real-time rule-based simulations, skill trainers, and interactive 3D sandboxes built for hands-on engagement.",
-            scope: "We create accurate interactive environments—from puzzle and logic trainers to tactical and physics-based simulations."
-          },
-          {
-            slug: "arcade-puzzle-experiences",
-            title: "Arcade & Puzzle Experiences",
-            summary: "Addictive, replayable arcade challenges and brain-teasing puzzle games with crisp scoring and leaderboards.",
-            scope: "We build snappy, high-replayability arcade and puzzle titles designed for quick sessions and competitive personal bests."
-          },
-          {
-            slug: "game-concept-prototyping",
-            title: "Game Concept & Prototyping",
-            summary: "Rapid playable prototypes that test core mechanics, fun factor, and visual direction before full production.",
-            scope: "We turn raw game ideas into working playable demos so mechanics and user experience can be refined early."
-          },
-          {
-            slug: "performance-frame-optimization",
-            title: "Performance & Frame Optimization",
-            summary: "Lightweight asset architecture and clean code execution ensuring smooth, lag-free gameplay across devices.",
-            scope: "We optimize rendering pipelines, memory usage, and responsive layouts so games run smoothly on both high-end and everyday devices."
-          }
+          { slug: "3d-game-development", title: "3D Game Development", summary: "Interactive three-dimensional environments, spatial camera systems, and real-time 3D gameplay mechanics.", scope: "We engineer immersive 3D game worlds featuring dynamic lighting, responsive character or object movement, and engaging spatial challenges." },
+          { slug: "browser-based-web-games", title: "Browser-Based Web Games", summary: "Instant-play games running directly in modern desktop and mobile web browsers with zero installation required.", scope: "We build fast-loading, accessible web games optimized for instant play across laptops, tablets, and smartphones." },
+          { slug: "real-time-strategy-games", title: "Real-Time Strategy Games", summary: "Tactical decision-making, resource management, and strategic battlefield mechanics that reward smart planning.", scope: "We design strategy experiences with balanced unit mechanics, tactical map layouts, and engaging progression systems." },
+          { slug: "fast-paced-action-games", title: "Fast-Paced Action Games", summary: "High-responsiveness combat, reflex challenges, and dynamic enemy encounters built for thrilling gameplay.", scope: "We tune frame-accurate controls, collision feedback, and escalating waves of action to keep players deeply engaged." },
+          { slug: "story-driven-adventure-games", title: "Story-Driven Adventure Games", summary: "Exploration-focused worlds combining narrative discovery, environmental storytelling, and interactive quests.", scope: "We blend our storytelling expertise with interactive gameplay to build memorable worlds filled with missions, lore, and discovery." },
+          { slug: "level-design-worldbuilding", title: "Level Design & Worldbuilding", summary: "Thoughtfully paced stages, arenas, and environments structured to teach mechanics and reward exploration.", scope: "We design multi-stage progressions where each level introduces fresh challenges, visual landmarks, and satisfying payoffs." },
+          { slug: "gameplay-mechanics-physics", title: "Gameplay Mechanics & Physics", summary: "Core movement, collision detection, scoring rules, and interactive physics tuned for smooth game feel.", scope: "We engineer reliable game loops, responsive input handling, and satisfying tactile feedback across every interaction." },
+          { slug: "game-hud-interface-design", title: "Game HUD & Interface Design", summary: "Clean, futuristic heads-up displays, menus, scoreboards, and controls that keep players informed without clutter.", scope: "We design intuitive menus, live timers, health/score indicators, and touch/keyboard controls that enhance usability." },
+          { slug: "interactive-simulations", title: "Interactive Simulations", summary: "Real-time rule-based simulations, skill trainers, and interactive 3D sandboxes built for hands-on engagement.", scope: "We create accurate interactive environments—from puzzle and logic trainers to tactical and physics-based simulations." },
+          { slug: "arcade-puzzle-experiences", title: "Arcade & Puzzle Experiences", summary: "Addictive, replayable arcade challenges and brain-teasing puzzle games with crisp scoring and leaderboards.", scope: "We build snappy, high-replayability arcade and puzzle titles designed for quick sessions and competitive personal bests." },
+          { slug: "game-concept-prototyping", title: "Game Concept & Prototyping", summary: "Rapid playable prototypes that test core mechanics, fun factor, and visual direction before full production.", scope: "We turn raw game ideas into working playable demos so mechanics and user experience can be refined early." },
+          { slug: "performance-frame-optimization", title: "Performance & Frame Optimization", summary: "Lightweight asset architecture and clean code execution ensuring smooth, lag-free gameplay across devices.", scope: "We optimize rendering pipelines, memory usage, and responsive layouts so games run smoothly on both high-end and everyday devices." }
         ]
       },
       {
@@ -1387,83 +1119,22 @@
           "Semantic SEO structure, fast load optimization, and accessible navigation"
         ],
         subServices: [
-          {
-            slug: "flagship-company-websites",
-            title: "Flagship Company Websites",
-            summary: "Authoritative corporate websites designed to establish brand prestige, clarity, and global credibility.",
-            scope: "We build comprehensive multi-section corporate websites that communicate your company's vision, services, leadership, and achievements with executive polish."
-          },
-          {
-            slug: "business-brand-platforms",
-            title: "Business & Brand Platforms",
-            summary: "Tailored commercial websites engineered to showcase products, services, and brand identity with clarity.",
-            scope: "We design structured, easy-to-navigate business websites that align visual aesthetics with your company's core strengths."
-          },
-          {
-            slug: "executive-personal-portfolios",
-            title: "Executive Personal Portfolios",
-            summary: "Distinguished personal brand websites for founders, authors, leaders, and creators.",
-            scope: "We create refined digital profiles highlighting biography, milestones, creative works, and leadership vision in a memorable format."
-          },
-          {
-            slug: "high-conversion-landing-pages",
-            title: "High-Conversion Landing Pages",
-            summary: "Focused, high-impact single-page experiences built for launches, campaigns, and flagship announcements.",
-            scope: "We structure clear visual hierarchy, compelling headlines, and seamless navigation to keep visitors engaged from top to bottom."
-          },
-          {
-            slug: "bespoke-ui-ux-visual-design",
-            title: "Bespoke UI/UX Visual Design",
-            summary: "Custom typography systems, color palettes, glassmorphism, and layout architecture—never generic templates.",
-            scope: "Every interface is custom-designed around your brand identity, pairing clean spacing with elevated visual contrast and intuitive user journeys."
-          },
-          {
-            slug: "interactive-animated-web",
-            title: "Interactive & Animated Web",
-            summary: "Smooth scroll choreography, subtle hover depth, animated counters, and responsive motion micro-interactions.",
-            scope: "We integrate hardware-accelerated animations and interactive transitions that make browsing feel fluid, modern, and alive."
-          },
-          {
-            slug: "gaming-media-hub-portals",
-            title: "Gaming & Media Hub Portals",
-            summary: "Dedicated digital portals built to host interactive games, comic readers, audio libraries, and media collections.",
-            scope: "We architect specialized entertainment hubs with category filtering, clean media presentation, and fast navigation."
-          },
-          {
-            slug: "mobile-first-responsive-layouts",
-            title: "Mobile-First Responsive Layouts",
-            summary: "Adaptive grid systems that look equally extraordinary on ultra-wide monitors, laptops, tablets, and smartphones.",
-            scope: "We engineer fluid breakpoints and touch-friendly navigation menus so every visitor enjoys a seamless experience on any screen."
-          },
-          {
-            slug: "custom-frontend-engineering",
-            title: "Custom Frontend Engineering",
-            summary: "Clean, modular, standards-compliant code built for reliability, scalability, and effortless future updates.",
-            scope: "We write well-organized HTML, CSS, and JavaScript architectures with clear configuration blocks and zero unnecessary bloat."
-          },
-          {
-            slug: "seo-core-web-vitals-tuning",
-            title: "SEO & Core Web Vitals Tuning",
-            summary: "Semantic HTML structure, metadata optimization, and fast asset loading for strong search visibility and speed.",
-            scope: "We structure headings, meta descriptions, accessible attributes, and lightweight scripts for rapid page load performance."
-          },
-          {
-            slug: "brand-identity-typography",
-            title: "Brand Identity & Typography",
-            summary: "Cohesive digital brand systems uniting custom SVG emblems, font pairings, and signature color tokens.",
-            scope: "We establish unified visual guidelines across your website so every section reinforces a consistent corporate identity."
-          },
-          {
-            slug: "custom-web-applications",
-            title: "Custom Web Applications",
-            summary: "Interactive browser tools, dynamic dashboards, and functional web utilities tailored to specific workflows.",
-            scope: "Beyond static pages, we develop interactive client-side tools, calculators, timers, and specialized digital utilities."
-          }
+          { slug: "flagship-company-websites", title: "Flagship Company Websites", summary: "Authoritative corporate websites designed to establish brand prestige, clarity, and global credibility.", scope: "We build comprehensive multi-section corporate websites that communicate your company's vision, services, leadership, and achievements with executive polish." },
+          { slug: "business-brand-platforms", title: "Business & Brand Platforms", summary: "Tailored commercial websites engineered to showcase products, services, and brand identity with clarity.", scope: "We design structured, easy-to-navigate business websites that align visual aesthetics with your company's core strengths." },
+          { slug: "executive-personal-portfolios", title: "Executive Personal Portfolios", summary: "Distinguished personal brand websites for founders, authors, leaders, and creators.", scope: "We create refined digital profiles highlighting biography, milestones, creative works, and leadership vision in a memorable format." },
+          { slug: "high-conversion-landing-pages", title: "High-Conversion Landing Pages", summary: "Focused, high-impact single-page experiences built for launches, campaigns, and flagship announcements.", scope: "We structure clear visual hierarchy, compelling headlines, and seamless navigation to keep visitors engaged from top to bottom." },
+          { slug: "bespoke-ui-ux-visual-design", title: "Bespoke UI/UX Visual Design", summary: "Custom typography systems, color palettes, glassmorphism, and layout architecture—never generic templates.", scope: "Every interface is custom-designed around your brand identity, pairing clean spacing with elevated visual contrast and intuitive user journeys." },
+          { slug: "interactive-animated-web", title: "Interactive & Animated Web", summary: "Smooth scroll choreography, subtle hover depth, animated counters, and responsive motion micro-interactions.", scope: "We integrate hardware-accelerated animations and interactive transitions that make browsing feel fluid, modern, and alive." },
+          { slug: "gaming-media-hub-portals", title: "Gaming & Media Hub Portals", summary: "Dedicated digital portals built to host interactive games, comic readers, audio libraries, and media collections.", scope: "We architect specialized entertainment hubs with category filtering, clean media presentation, and fast navigation." },
+          { slug: "mobile-first-responsive-layouts", title: "Mobile-First Responsive Layouts", summary: "Adaptive grid systems that look equally extraordinary on ultra-wide monitors, laptops, tablets, and smartphones.", scope: "We engineer fluid breakpoints and touch-friendly navigation menus so every visitor enjoys a seamless experience on any screen." },
+          { slug: "custom-frontend-engineering", title: "Custom Frontend Engineering", summary: "Clean, modular, standards-compliant code built for reliability, scalability, and effortless future updates.", scope: "We write well-organized HTML, CSS, and JavaScript architectures with clear configuration blocks and zero unnecessary bloat." },
+          { slug: "seo-core-web-vitals-tuning", title: "SEO & Core Web Vitals Tuning", summary: "Semantic HTML structure, metadata optimization, and fast asset loading for strong search visibility and speed.", scope: "We structure headings, meta descriptions, accessible attributes, and lightweight scripts for rapid page load performance." },
+          { slug: "brand-identity-typography", title: "Brand Identity & Typography", summary: "Cohesive digital brand systems uniting custom SVG emblems, font pairings, and signature color tokens.", scope: "We establish unified visual guidelines across your website so every section reinforces a consistent corporate identity." },
+          { slug: "custom-web-applications", title: "Custom Web Applications", summary: "Interactive browser tools, dynamic dashboards, and functional web utilities tailored to specific workflows.", scope: "Beyond static pages, we develop interactive client-side tools, calculators, timers, and specialized digital utilities." }
         ]
       }
     ];
 
-    // Render all 6 divisions and clickable sub-service cards into #divisions-container
     function renderDivisions() {
       const container = document.getElementById("divisions-container");
       if (!container) return;
@@ -1513,7 +1184,6 @@
 
     let lastScrollPosition = 0;
 
-    // Open the dedicated detail page for any clicked sub-heading
     window.openSubServicePage = function(divisionId, subSlug, skipHistory) {
       const division = DIVISIONS_DATA.find((d) => d.id === divisionId);
       if (!division) return;
@@ -1522,7 +1192,6 @@
 
       lastScrollPosition = window.scrollY;
 
-      // Populate detail view fields
       document.getElementById("detail-breadcrumb-division").textContent = division.shortName;
       document.getElementById("detail-breadcrumb-title").textContent = sub.title;
       document.getElementById("detail-division-badge").textContent = division.code;
@@ -1531,7 +1200,6 @@
       document.getElementById("detail-summary").textContent = sub.summary;
       document.getElementById("detail-scope").textContent = sub.scope;
 
-      // Populate Production Approach steps tailored to this sub-service
       const workflowSteps = [
         `Discovery & creative brief alignment tailored specifically for ${sub.title.toLowerCase()}.`,
         `Concept architecture emphasizing ${division.focusArea}.`,
@@ -1547,7 +1215,6 @@
         `)
         .join("");
 
-      // Populate Key Deliverables
       document.getElementById("detail-deliverables-list").innerHTML = division.deliverables
         .map((item) => `
           <li class="flex items-start gap-2.5">
@@ -1557,7 +1224,6 @@
         `)
         .join("");
 
-      // Populate Related Capabilities in the same division
       document.getElementById("detail-related-heading").textContent = `More in ${division.shortName}`;
       const relatedItems = division.subServices.filter((item) => item.slug !== sub.slug);
       document.getElementById("detail-related-grid").innerHTML = relatedItems
@@ -1578,7 +1244,6 @@
         `)
         .join("");
 
-      // Switch views cleanly
       document.getElementById("main-landing-view").classList.add("hidden");
       const detailView = document.getElementById("subservice-detail-view");
       detailView.classList.remove("hidden");
@@ -1590,7 +1255,6 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // Return to the main landing page
     window.closeSubServicePage = function(skipHistory) {
       const detailView = document.getElementById("subservice-detail-view");
       const mainView = document.getElementById("main-landing-view");
@@ -1609,7 +1273,6 @@
       window.scrollTo({ top: lastScrollPosition || 0, behavior: "auto" });
     };
 
-    // Handle browser Back/Forward buttons for sub-service detail pages
     window.addEventListener("popstate", (event) => {
       if (event.state && event.state.divisionId && event.state.subSlug) {
         openSubServicePage(event.state.divisionId, event.state.subSlug, true);
@@ -1619,13 +1282,35 @@
     });
 
     document.addEventListener("DOMContentLoaded", () => {
+      // 0. Automatically play welcome.mp4 on page load and transition into website when ended
+      const welcomeVideo = document.getElementById("welcome-video-player");
+
+      if (welcomeVideo) {
+        welcomeVideo.addEventListener("ended", () => {
+          finishWelcomeIntro();
+        });
+
+        welcomeVideo.addEventListener("error", () => {
+          finishWelcomeIntro();
+        });
+
+        const playPromise = welcomeVideo.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            finishWelcomeIntro();
+          });
+        }
+      } else {
+        finishWelcomeIntro();
+      }
+
       // Render all 6 clickable service divisions
       renderDivisions();
 
-      // Check if opened directly via a #detail/divisionId/subSlug URL hash
       if (window.location.hash.startsWith("#detail/")) {
         const parts = window.location.hash.replace("#detail/", "").split("/");
         if (parts.length === 2) {
+          finishWelcomeIntro();
           openSubServicePage(parts[0], parts[1], true);
         }
       }
@@ -1711,14 +1396,6 @@
       // 3. GSAP Scroll Animations & Animated Counters
       if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
         gsap.registerPlugin(ScrollTrigger);
-
-        gsap.from(".hero-reveal", {
-          y: 26,
-          opacity: 0,
-          duration: 0.9,
-          stagger: 0.12,
-          ease: "power3.out"
-        });
 
         gsap.utils.toArray(".reveal-up").forEach((el) => {
           gsap.from(el, {

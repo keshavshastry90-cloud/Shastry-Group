@@ -180,7 +180,7 @@
        CONFIGURABLE BRAND SETTINGS
        Repository Root Files Required:
        1. index.html
-       2. welcome.mp4   (Plays automatically on entry with spoken welcome voiceover)
+       2. welcome.mp4   (Plays with its own original lip-synced voice track)
        3. founder.png   (Founder portrait displayed in the Founder section)
   ====================================================================== -->
   <script>
@@ -188,13 +188,12 @@
       companyName: "SHASTRY GROUP",
       founderName: "Keshav Shastry",
       welcomeVideo: "./welcome.mp4",
-      welcomeVoiceLine: "Welcome to Shastry Group. Creating beyond imagination.",
       founderImage: "./founder.png"
     };
   </script>
 
   <!-- =====================================================================
-       PURE FULL-SCREEN WELCOME VIDEO OVERLAY (AUTO-PLAYS VIDEO + VOICE)
+       PURE FULL-SCREEN WELCOME VIDEO OVERLAY (USES YOUR VIDEO'S OWN VOICE)
   ====================================================================== -->
   <div id="welcome-intro-overlay" class="fixed inset-0 z-[100] bg-midnight flex items-center justify-center overflow-hidden">
     <video
@@ -899,47 +898,10 @@
   </footer>
 
   <!-- =====================================================================
-       JAVASCRIPT: WELCOME VIDEO + BUILT-IN HTML SPEECH VOICEOVER + ROUTER
+       JAVASCRIPT: NATIVE VIDEO AUDIO PLAYBACK, DIVISION DATA & ROUTER
   ====================================================================== -->
   <script>
     let heroRevealTriggered = false;
-    let voiceSpoken = false;
-
-    function speakWelcomeVoice() {
-      if (voiceSpoken || !("speechSynthesis" in window)) return;
-      try {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(SITE_CONFIG.welcomeVoiceLine);
-        const voices = window.speechSynthesis.getVoices();
-        const preferredVoice = voices.find(
-          (v) =>
-            v.lang.startsWith("en") &&
-            (v.name.includes("Google UK English Male") ||
-              v.name.includes("Daniel") ||
-              v.name.includes("Natural") ||
-              v.name.includes("Male"))
-        ) || voices.find((v) => v.lang.startsWith("en"));
-
-        if (preferredVoice) {
-          utterance.voice = preferredVoice;
-        }
-        utterance.rate = 0.94;
-        utterance.pitch = 0.98;
-        utterance.volume = 1.0;
-        utterance.onstart = () => {
-          voiceSpoken = true;
-        };
-        window.speechSynthesis.speak(utterance);
-      } catch (e) {
-        // Ignore if speech synthesis is blocked prior to user interaction
-      }
-    }
-
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.onvoiceschanged = () => {
-        if (!voiceSpoken) speakWelcomeVoice();
-      };
-    }
 
     function triggerHeroEntrance() {
       if (heroRevealTriggered) return;
@@ -1319,14 +1281,10 @@
     });
 
     document.addEventListener("DOMContentLoaded", () => {
-      // 0. Automatically play welcome.mp4 + HTML Speech Synthesis voiceover
+      // 0. Play welcome.mp4 with its own built-in audio track
       const welcomeVideo = document.getElementById("welcome-video-player");
 
       if (welcomeVideo) {
-        welcomeVideo.addEventListener("playing", () => {
-          speakWelcomeVoice();
-        });
-
         welcomeVideo.addEventListener("ended", () => {
           finishWelcomeIntro();
         });
@@ -1336,27 +1294,25 @@
         });
 
         welcomeVideo.muted = false;
+        welcomeVideo.volume = 1.0;
+
         const playPromise = welcomeVideo.play();
         if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              speakWelcomeVoice();
-            })
-            .catch(() => {
-              // Browser autoplay policy fallback: start video muted and trigger sound + voice on first interaction
-              welcomeVideo.muted = true;
-              welcomeVideo.play().catch(() => finishWelcomeIntro());
-              const unlockAudio = () => {
-                welcomeVideo.muted = false;
-                speakWelcomeVoice();
-                document.removeEventListener("click", unlockAudio);
-                document.removeEventListener("touchstart", unlockAudio);
-                document.removeEventListener("keydown", unlockAudio);
-              };
-              document.addEventListener("click", unlockAudio);
-              document.addEventListener("touchstart", unlockAudio);
-              document.addEventListener("keydown", unlockAudio);
-            });
+          playPromise.catch(() => {
+            // If browser blocks unmuted autoplay on initial load, start muted and unmute on first user interaction
+            welcomeVideo.muted = true;
+            welcomeVideo.play().catch(() => finishWelcomeIntro());
+            const enableVideoSound = () => {
+              welcomeVideo.muted = false;
+              welcomeVideo.volume = 1.0;
+              document.removeEventListener("click", enableVideoSound);
+              document.removeEventListener("touchstart", enableVideoSound);
+              document.removeEventListener("keydown", enableVideoSound);
+            };
+            document.addEventListener("click", enableVideoSound);
+            document.addEventListener("touchstart", enableVideoSound);
+            document.addEventListener("keydown", enableVideoSound);
+          });
         }
       } else {
         finishWelcomeIntro();
